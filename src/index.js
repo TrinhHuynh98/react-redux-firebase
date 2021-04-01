@@ -3,11 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './store/reducer/rootReducer';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import { getFirestore,reduxFirestore } from 'redux-firestore';
+import { getFirebase,reactReduxFirebase } from 'react-redux-firebase';
+import Fbconfig from './config/Fbconfig';
+
+const store = createStore(rootReducer, 
+  compose(
+    applyMiddleware(thunk.withExtraArgument({
+    getFirebase,
+    getFirestore
+    })),
+    reduxFirestore(Fbconfig),
+    reactReduxFirebase(Fbconfig)
+    )
+    );
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
 );
 
